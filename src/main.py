@@ -202,29 +202,24 @@ print("Model saved to models/defect_classifier.h5")
 
 
 
+import os
+
 def predict_image(model, img_path):
-
     from tensorflow.keras.preprocessing import image as kimage
-
     img = kimage.load_img(img_path, target_size=(64, 64))
-
     img_array = kimage.img_to_array(img) / 255.0
-
     img_array = np.expand_dims(img_array, axis=0)
-
     prob = model.predict(img_array)[0][0]
-
     label = "defective" if prob > 0.5 else "non_defective"
-
     return label, prob
 
-label, prob = predict_image(model, "data/processed/test/defective/img_0.png")
+model.save("models/defect_classifier.h5")
+print("Model saved to models/defect_classifier.h5")
 
+# pick a real file that actually exists in the test set, instead of a hardcoded name
+test_defective_dir = "data/processed/test/defective"
+sample_file = os.listdir(test_defective_dir)[0]
+sample_path = os.path.join(test_defective_dir, sample_file)
+
+label, prob = predict_image(model, sample_path)
 print(f"Prediction: {label} ({prob:.3f})")
-
-
-
-
-
-
-
